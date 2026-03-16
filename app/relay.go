@@ -56,9 +56,22 @@ func initRelay(ctx context.Context) error {
 	relayRes := relay.DefaultResources()
 	relayRes.Limit = nil
 	relayRes.ReservationTTL = time.Duration(conf.GetInt("relay.reservation_ttl")) * time.Second
+	relayOpts := []relay.Option{relay.WithResources(relayRes)}
+
+	// peer whitelist ACL
+	whitelist := conf.GetStringSlice("relay.peer_whitelist")
+	if len(whitelist) > 0 {
+		acl, err := newPeerWhitelistACL(whitelist)
+		if err != nil {
+			return err
+		}
+		relayOpts = append(relayOpts, relay.WithACL(acl))
+		log.Printf("relay peer whitelist enabled: %d peers", len(whitelist))
+	}
+
 	opts = append(opts,
 		libp2p.ForceReachabilityPublic(),
-		libp2p.EnableRelayService(relay.WithResources(relayRes)),
+		libp2p.EnableRelayService(relayOpts...),
 		libp2p.DisableRelay(),
 	)
 

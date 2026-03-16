@@ -57,6 +57,7 @@ func init() {
 		"/ip4/0.0.0.0/udp/19881/quic-v1",
 	})
 
+	conf.SetDefault("relay.peer_whitelist", []string{})
 	conf.SetDefault("relay.conn_lo", 4096)
 	conf.SetDefault("relay.conn_hi", 8192)
 	conf.SetDefault("relay.conn_grace", 60)
