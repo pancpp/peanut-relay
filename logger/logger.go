@@ -29,7 +29,7 @@ func Init() error {
 		LocalTime:  conf.GetBool("log.local_time"),
 		Compress:   conf.GetBool("log.compress"),
 	}
-	if conf.GetBool("enable_console_log") {
+	if conf.GetBool("log.enable_console_log") {
 		log.SetOutput(io.MultiWriter(fileLogWriter, os.Stderr))
 	} else {
 		log.SetOutput(fileLogWriter)

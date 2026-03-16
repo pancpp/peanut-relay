@@ -51,16 +51,20 @@ func init() {
 	conf.SetDefault("log.local_time", true)
 	conf.SetDefault("log.compress", true)
 
-	conf.SetDefault("p2p.private_key", "")
-	conf.SetDefault("p2p.pnet_psk", "")
-	conf.SetDefault("p2p.fqdn", "")
-	conf.SetDefault("p2p.rendezvous", "/peanut/default")
-	conf.SetDefault("p2p.conn_lo", 4096)
-	conf.SetDefault("p2p.conn_hi", 8192)
-	conf.SetDefault("p2p.conn_grace", 60)
-	conf.SetDefault("p2p.reservation_ttl", 60)
-	conf.SetDefault("p2p.bootstraps", []string{})
-	conf.SetDefault("p2p.listen_port", 19881)
+	conf.SetDefault("p2p.private_key_path", "/etc/peanut/relay.pkey")
+	conf.SetDefault("p2p.pnet_psk_path", "")
+	conf.SetDefault("p2p.listen_multiaddrs", []string{
+		"/ip4/0.0.0.0/udp/19881/quic-v1",
+	})
+
+	conf.SetDefault("relay.conn_lo", 4096)
+	conf.SetDefault("relay.conn_hi", 8192)
+	conf.SetDefault("relay.conn_grace", 60)
+	conf.SetDefault("relay.reservation_ttl", 60)
+
+	conf.SetDefault("disc.multiaddress", []string{
+		"/ip4/disc.xxxx.com/udp/19881/quic-v1/p2p/xxxxxxx",
+	})
 
 	// set file path
 	conf.SetConfigFile(confDirPath)
