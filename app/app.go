@@ -10,7 +10,7 @@ import (
 func Init(ctx context.Context) error {
 	// create connection gater
 	var connGater coreconnmgr.ConnectionGater
-	if conf.GetBool("p2p.enable_acl") {
+	if conf.GetBool("p2p.enable_gater") {
 		if g, err := newConnGater(); err != nil {
 			return err
 		} else {

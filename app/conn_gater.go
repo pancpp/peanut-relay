@@ -41,7 +41,7 @@ func newConnGater() (*ConnGater, error) {
 		PeerIDs []string `yaml:"peer_ids"`
 	}
 
-	path := conf.GetString("p2p.acl_allowlist_path")
+	path := conf.GetString("p2p.gater_allowlist_path")
 	if path == "" {
 		return nil, nil
 	}
