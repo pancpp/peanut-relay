@@ -1,14 +1,36 @@
 package app
 
 import (
-	"fmt"
+	"log"
 	"os"
 
+	"github.com/libp2p/go-libp2p/core/peer"
+	multiaddr "github.com/multiformats/go-multiaddr"
 	"github.com/pancpp/peanut-relay/conf"
 	"go.yaml.in/yaml/v3"
 )
 
-func loadWhitelist() ([]string, error) {
+func loadWhitelist() ([]peer.ID, error) {
+	var peerIdList []peer.ID
+
+	// load peer IDs from discovery server
+	discMultiAddrs := conf.GetStringSlice("disc.multiaddrs")
+	for _, addr := range discMultiAddrs {
+		maddr, err := multiaddr.NewMultiaddr(addr)
+		if err != nil {
+			log.Printf("discovery server multi-addr parsing err: %v, %v", err, addr)
+			return nil, err
+		}
+
+		info, err := peer.AddrInfoFromP2pAddr(maddr)
+		if err != nil {
+			return nil, err
+		}
+
+		peerIdList = append(peerIdList, info.ID)
+	}
+
+	// load peer IDs from whitelist file
 	type whitelist struct {
 		PeerIDs []string `yaml:"peer_ids"`
 	}
@@ -20,13 +42,23 @@ func loadWhitelist() ([]string, error) {
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("reading whitelist file: %w", err)
+		log.Printf("reading whitelist file err: %v, path: %s", err, path)
+		return nil, err
 	}
 
 	var wl whitelist
 	if err := yaml.Unmarshal(data, &wl); err != nil {
-		return nil, fmt.Errorf("parsing whitelist file: %w", err)
+		log.Printf("parsing whitelist file err: %v", err)
+		return nil, err
 	}
 
-	return wl.PeerIDs, nil
+	for _, peerID := range wl.PeerIDs {
+		id, err := peer.Decode(peerID)
+		if err != nil {
+			return nil, err
+		}
+		peerIdList = append(peerIdList, id)
+	}
+
+	return peerIdList, nil
 }

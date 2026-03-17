@@ -63,8 +63,8 @@ func init() {
 	conf.SetDefault("relay.conn_grace", 60)
 	conf.SetDefault("relay.reservation_ttl", 60)
 
-	conf.SetDefault("disc.multiaddress", []string{
-		"/ip4/disc.cpplint.com/udp/19880/quic-v1/p2p/xxxxxxx",
+	conf.SetDefault("disc.multiaddrs", []string{
+		"/dns4/disc.cpplint.com/udp/19880/quic-v1/p2p/12D3KooWEJifdgZLnVo87Pres6UqT3wZTGm3T6sVPFxnBQdszvEP",
 	})
 
 	// set file path
