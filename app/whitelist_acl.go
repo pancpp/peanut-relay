@@ -7,10 +7,14 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	multiaddr "github.com/multiformats/go-multiaddr"
 	"github.com/pancpp/peanut-relay/conf"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v2"
 )
 
-func loadWhitelist() ([]peer.ID, error) {
+type whiteListACL struct {
+	allowed map[peer.ID]struct{}
+}
+
+func newWhitelistACL() (*whiteListACL, error) {
 	var peerIdList []peer.ID
 
 	// load peer IDs from discovery server
@@ -60,5 +64,25 @@ func loadWhitelist() ([]peer.ID, error) {
 		peerIdList = append(peerIdList, id)
 	}
 
-	return peerIdList, nil
+	allowed := make(map[peer.ID]struct{}, len(peerIdList))
+	for _, id := range peerIdList {
+		allowed[id] = struct{}{}
+	}
+	return &whiteListACL{allowed: allowed}, nil
+}
+
+func (a *whiteListACL) AllowReserve(p peer.ID, addr multiaddr.Multiaddr) bool {
+	_, ok := a.allowed[p]
+	if !ok {
+		log.Printf("relay reserve denied for peer %s from %s", p, addr)
+	}
+	return ok
+}
+
+func (a *whiteListACL) AllowConnect(src peer.ID, srcAddr multiaddr.Multiaddr, dest peer.ID) bool {
+	_, ok := a.allowed[src]
+	if !ok {
+		log.Printf("relay connect denied for peer %s from %s to %s", src, srcAddr, dest)
+	}
+	return ok
 }

@@ -22,7 +22,7 @@ var (
 	gHost host.Host
 )
 
-func initRelay(ctx context.Context) error {
+func initRelay(ctx context.Context, w *whiteListACL) error {
 	// p2p opts
 	var opts []libp2p.Option
 
@@ -59,18 +59,8 @@ func initRelay(ctx context.Context) error {
 	relayOpts := []relay.Option{relay.WithResources(relayRes)}
 
 	// peer whitelist ACL
-	whitelistPeers, err := loadWhitelist()
-	if err != nil {
-		return err
-	}
-	if len(whitelistPeers) > 0 {
-		acl, err := newPeerWhitelistACL(whitelistPeers)
-		if err != nil {
-			return err
-		}
-		relayOpts = append(relayOpts, relay.WithACL(acl))
-		log.Printf("relay peer whitelist enabled: %d peers", len(whitelistPeers))
-	}
+	relayOpts = append(relayOpts, relay.WithACL(w))
+	log.Printf("relay peer whitelist enabled: %d peers", len(w.allowed))
 
 	opts = append(opts,
 		libp2p.ForceReachabilityPublic(),
