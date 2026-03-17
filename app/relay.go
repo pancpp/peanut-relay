@@ -59,14 +59,17 @@ func initRelay(ctx context.Context) error {
 	relayOpts := []relay.Option{relay.WithResources(relayRes)}
 
 	// peer whitelist ACL
-	whitelist := conf.GetStringSlice("relay.peer_whitelist")
-	if len(whitelist) > 0 {
-		acl, err := newPeerWhitelistACL(whitelist)
+	whitelistPeers, err := loadWhitelist()
+	if err != nil {
+		return err
+	}
+	if len(whitelistPeers) > 0 {
+		acl, err := newPeerWhitelistACL(whitelistPeers)
 		if err != nil {
 			return err
 		}
 		relayOpts = append(relayOpts, relay.WithACL(acl))
-		log.Printf("relay peer whitelist enabled: %d peers", len(whitelist))
+		log.Printf("relay peer whitelist enabled: %d peers", len(whitelistPeers))
 	}
 
 	opts = append(opts,

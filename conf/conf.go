@@ -51,20 +51,20 @@ func init() {
 	conf.SetDefault("log.local_time", true)
 	conf.SetDefault("log.compress", true)
 
-	conf.SetDefault("p2p.private_key_path", "/etc/peanut/relay.pkey")
+	conf.SetDefault("p2p.private_key_path", "/etc/peanut/relay-private-key.b64")
 	conf.SetDefault("p2p.pnet_psk_path", "")
 	conf.SetDefault("p2p.listen_multiaddrs", []string{
 		"/ip4/0.0.0.0/udp/19881/quic-v1",
 	})
+	conf.SetDefault("p2p.acl_whitelist_path", "/etc/peanut/relay-whitelist.yaml")
 
-	conf.SetDefault("relay.peer_whitelist", []string{})
 	conf.SetDefault("relay.conn_lo", 4096)
 	conf.SetDefault("relay.conn_hi", 8192)
 	conf.SetDefault("relay.conn_grace", 60)
 	conf.SetDefault("relay.reservation_ttl", 60)
 
 	conf.SetDefault("disc.multiaddress", []string{
-		"/ip4/disc.xxxx.com/udp/19881/quic-v1/p2p/xxxxxxx",
+		"/ip4/disc.cpplint.com/udp/19880/quic-v1/p2p/xxxxxxx",
 	})
 
 	// set file path
