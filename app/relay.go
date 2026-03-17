@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p"
+	coreconnmgr "github.com/libp2p/go-libp2p/core/connmgr"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/pnet"
@@ -22,7 +23,7 @@ var (
 	gHost host.Host
 )
 
-func initRelay(ctx context.Context, w *whiteListACL) error {
+func initRelay(ctx context.Context, connGater coreconnmgr.ConnectionGater) error {
 	// p2p opts
 	var opts []libp2p.Option
 
@@ -58,9 +59,10 @@ func initRelay(ctx context.Context, w *whiteListACL) error {
 	relayRes.ReservationTTL = time.Duration(conf.GetInt("relay.reservation_ttl")) * time.Second
 	relayOpts := []relay.Option{relay.WithResources(relayRes)}
 
-	// peer whitelist ACL
-	relayOpts = append(relayOpts, relay.WithACL(w))
-	log.Printf("relay peer whitelist enabled: %d peers", len(w.allowed))
+	// add connection gater
+	if connGater != nil {
+		opts = append(opts, libp2p.ConnectionGater(connGater))
+	}
 
 	opts = append(opts,
 		libp2p.ForceReachabilityPublic(),

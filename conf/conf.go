@@ -56,7 +56,8 @@ func init() {
 	conf.SetDefault("p2p.listen_multiaddrs", []string{
 		"/ip4/0.0.0.0/udp/19881/quic-v1",
 	})
-	conf.SetDefault("p2p.acl_whitelist_path", "/etc/peanut/relay-whitelist.yaml")
+	conf.SetDefault("p2p.enable_acl", false)
+	conf.SetDefault("p2p.acl_allowlist_path", "/etc/peanut/relay-allowlist.yaml")
 
 	conf.SetDefault("relay.conn_lo", 4096)
 	conf.SetDefault("relay.conn_hi", 8192)
