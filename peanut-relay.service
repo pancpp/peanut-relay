@@ -4,7 +4,7 @@ Description=A simple P2P based virtual private network: peanut relay service
 [Service]
 Type=simple
 WorkingDirectory=/srv/peanut-relay
-ExecStart=/srv/peanut-relay/peanut-relay
+ExecStart=/srv/peanut-relay/peanut-relay -c /srv/peanut-relay/relay.yaml
 Restart=always
 RestartSec=2
 
