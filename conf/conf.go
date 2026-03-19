@@ -29,7 +29,7 @@ func init() {
 	)
 
 	pflag.BoolVarP(&showVersion, "version", "V", false, "Show version information.")
-	pflag.StringVarP(&confDirPath, "config", "c", "/etc/peanut/relay.yaml", "Config file path.")
+	pflag.StringVarP(&confDirPath, "config", "c", "/etc/peanut-relay/relay.yaml", "Config file path.")
 	pflag.Parse()
 
 	if showVersion {
@@ -51,22 +51,16 @@ func init() {
 	conf.SetDefault("log.local_time", true)
 	conf.SetDefault("log.compress", true)
 
-	conf.SetDefault("p2p.private_key_path", "/etc/peanut/relay-private-key.b64")
+	conf.SetDefault("p2p.private_key_path", "/etc/peanut-relay/private-key.b64")
 	conf.SetDefault("p2p.pnet_psk_path", "")
-	conf.SetDefault("p2p.listen_multiaddrs", []string{
-		"/ip4/0.0.0.0/udp/19881/quic-v1",
-	})
-	conf.SetDefault("p2p.enable_gater", false)
-	conf.SetDefault("p2p.gater_allowlist_path", "/etc/peanut/relay-allowlist.yaml")
+	conf.SetDefault("p2p.listen_multiaddrs", []string{"/ip4/0.0.0.0/udp/19881/quic-v1"})
+	conf.SetDefault("p2p.discovery_multiaddrs", []string{"/dns4/discovery.cpplint.com/udp/19880/quic-v1/p2p/12D3KooWEJifdgZLnVo87Pres6UqT3wZTGm3T6sVPFxnBQdszvEP"})
+	conf.SetDefault("p2p.allowlist_path", "/etc/peanut-relay/allowlist.yaml")
 
-	conf.SetDefault("relay.conn_lo", 4096)
-	conf.SetDefault("relay.conn_hi", 8192)
-	conf.SetDefault("relay.conn_grace", 60)
-	conf.SetDefault("relay.reservation_ttl", 60)
-
-	conf.SetDefault("disc.multiaddrs", []string{
-		"/dns4/disc.cpplint.com/udp/19880/quic-v1/p2p/12D3KooWEJifdgZLnVo87Pres6UqT3wZTGm3T6sVPFxnBQdszvEP",
-	})
+	conf.SetDefault("p2p.relay_conn_lo", 4096)
+	conf.SetDefault("p2p.relay_conn_hi", 8192)
+	conf.SetDefault("p2p.relay_conn_grace", 60)
+	conf.SetDefault("p2p.relay_reservation_ttl", 60)
 
 	// set file path
 	conf.SetConfigFile(confDirPath)
